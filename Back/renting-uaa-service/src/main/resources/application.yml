@@ -1,0 +1,54 @@
+spring:
+  profiles:
+    include: datasource
+  application:
+    name: renting-uaa-service
+  freemarker:
+    enabled: true
+    suffix: .html
+    request-context-attribute: rc
+    content-type: text/html
+    charset: UTF-8
+  resources:
+    add-mappings: false
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/renting_uaa?useUnicode=true&characterEncoding=UTF-8
+server:
+  port: ${uaa.port}
+  servlet:
+    context-path: /uaa
+
+logging:
+  level:
+    root: debug
+    org:
+      springframework:
+        web: info
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${eureka.server.url}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh,health,info,env
+
+# 全局关闭Hystrix超时,对所有微服务有效
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+
+# 设置ribbon超时时间
+ribbon:
+  ReadTimeout: 6000
+  ConnectTimeout: 6000

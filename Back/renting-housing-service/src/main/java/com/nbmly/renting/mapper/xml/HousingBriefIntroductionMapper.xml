@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nbmly.renting.mapper.HousingBriefIntroductionMapper">
+    <insert id="saveHousingBriefIntroduction" parameterType="com.nbmly.renting.pojo.HousingBriefIntroduction">
+        INSERT INTO
+            housing_brief_introduction
+            (housing_management_id,television,refrigerator,washing,air_conditioner,heater,bed,heating,broadband,wardrobe,gas)
+        VALUES
+            (#{housingManagementId},#{television},#{refrigerator},#{washing},#{airConditioner},#{heater},#{bed},#{heating},#{broadband},#{wardrobe},#{gas});
+    </insert>
+
+    <select id="getHousingBriefIntroduction" resultType="com.nbmly.renting.pojo.HousingBriefIntroduction">
+        SELECT
+            housing_management_id,television,refrigerator,washing,air_conditioner,heater,bed,heating,broadband,wardrobe,gas
+        FROM
+            housing_brief_introduction
+        WHERE
+            housing_management_id = #{id};
+    </select>
+
+    <update id="updateHousingBriefIntroduction" parameterType="com.nbmly.renting.pojo.HousingBriefIntroduction">
+        update
+            housing_brief_introduction
+        set
+            television=#{television},refrigerator=#{refrigerator},washing=#{washing},air_conditioner=#{airConditioner},
+            heater=#{heater},bed=#{bed},heating=#{heating},broadband=#{broadband},wardrobe=#{wardrobe},
+            gas=#{gas}
+        where
+            housing_management_id = #{housingManagementId};
+    </update>
+
+    <delete id="deleteHousingBriefIntroduction">
+        DELETE FROM
+            housing_brief_introduction
+        WHERE
+            housing_management_id = #{housingManagementId};
+    </delete>
+</mapper>

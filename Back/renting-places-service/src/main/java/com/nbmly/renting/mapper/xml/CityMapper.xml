@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nbmly.renting.mapper.CityMapper">
+    <select id="getCityList" resultType="com.nbmly.renting.pojo.City">
+        SELECT
+            id,city_first,city_name
+        FROM
+            city
+        ORDER BY
+            city_first;
+    </select>
+</mapper>

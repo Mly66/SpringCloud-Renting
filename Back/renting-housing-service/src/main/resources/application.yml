@@ -1,0 +1,43 @@
+spring:
+  profiles:
+    include: datasource,redis
+  application:
+    name: renting-housing-service
+  freemarker:
+    enabled: true
+    suffix: .html
+    request-context-attribute: rc
+    content-type: text/html
+    charset: UTF-8
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  servlet:
+    multipart:
+      max-file-size: 500KB
+      max-request-size: 10MB
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/renting_housing_resources?useUnicode=true&characterEncoding=UTF-8
+
+mybatis:
+  type-aliases-package: com.nbmly.renting.pojo
+  mapper-locations: classpath*:com/nbmly/renting/mapper/xml/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+
+
+server:
+  port: ${housing.port}
+  servlet:
+    context-path: /housing
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${eureka.server.url}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}

@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: renting-im-service
+  freemarker:
+    enabled: true
+    suffix: .html
+    request-context-attribute: rc
+    content-type: text/html
+    charset: UTF-8
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  data:
+    mongodb:
+      # uri: mongodb://192.168.37.129:27017/im
+      uri: mongodb://${mongodb.server.url}:${mongodb.server.port}/im
+
+server:
+  port: ${im.port}
+  servlet:
+    context-path: /im
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${eureka.server.url}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
