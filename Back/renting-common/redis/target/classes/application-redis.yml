@@ -1,0 +1,21 @@
+#redis
+spring:
+  redis:
+    host: ${redis.server.url}
+    port: ${redis.server.port}
+    database: 0
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 10000
+        max-idle: 8
+        min-idle: 0
+      shutdown-timeout: 100
+redisson:
+  host: ${redis.server.url}
+  port: ${redis.server.port}
+  database: 1
+  timeout: 10000
+  maxIdle: 8
+  minIdle: 0

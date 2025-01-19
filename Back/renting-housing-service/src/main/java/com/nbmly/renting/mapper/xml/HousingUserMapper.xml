@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nbmly.renting.mapper.HousingUserMapper">
+
+    <!-- 查询文章管理列表多对一配置 -->
+    <resultMap id="HousingUserAndManagement" type="com.nbmly.renting.pojo.HousingUser">
+        <id property="id" column="id"/>
+        <result property="accountId" column="account_id"/>
+        <result property="housingManagementId" column="housing_management_id"/>
+        <association property="housingManagement" javaType="com.nbmly.renting.pojo.HousingManagement">
+            <id property="id" column="id"/>
+            <result property="cityName" column="city_name"/>
+            <result property="housingTitle" column="housing_title"/>
+            <result property="address" column="address"/>
+            <result property="groupName" column="group_name"/>
+            <result property="fileName" column="file_name"/>
+            <result property="rent" column="rent"/>
+            <result property="state" column="state"/>
+            <result property="housingModeId" column="housing_mode_id"/>
+            <result property="room" column="room"/>
+            <result property="hall" column="hall"/>
+            <result property="mode" column="mode"/>
+            <result property="see" column="see"/>
+        </association>
+    </resultMap>
+
+    <insert id="saveHousing">
+        INSERT INTO
+            housing_user
+        VALUES
+            (NULL,#{accountId},#{housingManagementId});
+    </insert>
+    <select id="getHousingUser" resultMap="HousingUserAndManagement">
+        SELECT
+            account_id,housing_management_id,city_name,housing_title,address,group_name,
+            file_name,rent,state,housing_mode_id,room,hall,mode,see
+        FROM
+            housing_user u,housing_management h,housing_mode m
+        WHERE
+        <if test="accountId != -1 ">
+            account_id = #{accountId} AND
+        </if>
+          u.housing_management_id = h.id AND h.housing_mode_id = m.id LIMIT #{page},#{record};
+    </select>
+
+    <select id="getLikeUserIdHousing" resultMap="HousingUserAndManagement">
+        SELECT
+            account_id,housing_management_id,city_name,housing_title,address,group_name,
+            file_name,rent,state,housing_mode_id,room,hall,MODE,see
+        FROM
+            housing_user u,housing_management h,housing_mode m
+        WHERE
+            u.housing_management_id = h.id AND h.housing_mode_id = m.id
+            <if test="accountId != -1 ">
+                AND account_id LIKE "%"#{accountId}"%"
+            </if>
+            LIMIT #{page},#{rows};
+    </select>
+
+    <select id="getLikeUserIdHousingCounts" resultType="int">
+        SELECT
+            count(*)
+        FROM
+            housing_user u,housing_management h,housing_mode m
+        WHERE
+            u.housing_management_id = h.id AND h.housing_mode_id = m.id
+            <if test="accountId != -1 ">
+                AND account_id LIKE "%"#{accountId}"%"
+            </if>
+    </select>
+
+    <select id="getHousingUserScreen" resultMap="HousingUserAndManagement">
+        SELECT
+            account_id,housing_management_id,city_name,housing_title,address,
+            group_name,file_name,rent,state,housing_mode_id,room,hall,MODE,see
+        FROM
+            housing_user u,housing_management h,housing_mode m
+        WHERE
+            u.housing_management_id = h.id AND h.housing_mode_id = m.id
+            <if test="hScreen.modes != null ">
+                AND h.housing_mode_id IN (
+                <foreach collection="hScreen.modes" index="index" separator="," item="mode">
+                    #{mode}
+                </foreach>
+                )
+            </if >
+            <if test="hScreen.rentMin != null and hScreen.rentMax != null">
+                AND h.rent BETWEEN #{hScreen.rentMin} AND #{hScreen.rentMax}
+            </if >
+            <if test="hScreen.room != null and hScreen.hall != null">
+                AND h.room = #{hScreen.room} AND h.hall = #{hScreen.hall}
+            </if >
+            <if test="hScreen.cityName != null">
+                AND h.city_name = #{hScreen.cityName}
+            </if >
+            <if test="hScreen.housingTitle != null">
+                AND h.housing_title LIKE "%"#{hScreen.housingTitle}"%"
+            </if>
+            <if test="hScreen.Sort != null">
+                ORDER BY h.rent ${hScreen.Sort}
+            </if >
+        LIMIT #{page},#{record};
+    </select>
+
+    <select id="getIdHousing" resultMap="HousingUserAndManagement">
+        SELECT
+            account_id,housing_management_id,city_name,housing_title,address,group_name,file_name,rent,state,housing_mode_id,room,hall,MODE,see
+        FROM
+            housing_user u,housing_management h,housing_mode m
+        WHERE
+            h.id = #{housingManagementId} AND u.housing_management_id = h.id AND h.housing_mode_id = m.id;
+    </select>
+
+    <delete id="deleteHousingUser">
+        DELETE FROM
+            housing_user
+        WHERE
+            housing_management_id = #{housingManagementId};
+    </delete>
+
+</mapper>

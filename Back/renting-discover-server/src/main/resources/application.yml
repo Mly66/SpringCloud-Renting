@@ -1,0 +1,20 @@
+# 应用程序名称
+spring:
+  application:
+    name: renting-discovery-service
+
+server:
+  port: ${eureka.port}
+
+eureka:
+  server:
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 10000
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: ${eureka.server.url}
+  instance:
+    hostname: ${renting.ip}
+    prefer-ip-address: true

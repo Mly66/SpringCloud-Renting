@@ -1,0 +1,50 @@
+server:
+  port: ${gateway.port}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${eureka.server.url}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${spring.application.instance_id:${server.port}}
+
+spring:
+  application:
+    name: renting-gateway-server
+  ## GateWay配置
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # 开启从注册中心动态创建路由的功能，利用微服务名进行路由
+      routes:
+        - id: renting-uaa-service  # 路由ID ， 没有固定的规则但要求唯一，建议配合服务名
+          uri: lb://RENTING-UAA-SERVICE
+          predicates:
+            - Path=/uaa/**  # 断言，路径相匹配的进行路由
+
+        - id: renting-account-service  # 路由ID ， 没有固定的规则但要求唯一，建议配合服务名
+          uri: lb://RENTING-ACCOUNT-SERVICE
+          predicates:
+            - Path=/account/**  # 断言，路径相匹配的进行路由
+
+        - id: renting-housing-service  # 路由ID ， 没有固定的规则但要求唯一，建议配合服务名
+          uri: lb://RENTING-HOUSING-SERVICE
+          predicates:
+            - Path=/housing/**  # 断言，路径相匹配的进行路由
+
+        - id: renting-places-service  # 路由ID ， 没有固定的规则但要求唯一，建议配合服务名
+          uri: lb://RENTING-PLACES-SERVICE
+          predicates:
+            - Path=/place/**  # 断言，路径相匹配的进行路由
+
+        - id: renting-im-service-lb  # 路由ID ， 没有固定的规则但要求唯一，建议配合服务名
+          uri: lb://RENTING-IM-SERVICE
+          predicates:
+            - Path=/im/**  # 断言，路径相匹配的进行路由
+
+        - id: renting-im-service-ws  # 路由ID ， 没有固定的规则但要求唯一，建议配合服务名
+          uri: ws://RENTING-IM-SERVICE
+          predicates:
+            - Path=/im/**  # 断言，路径相匹配的进行路由

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nbmly.renting.mapper.AccountMapper">
+    <select id="login" resultType="com.nbmly.renting.pojo.Account">
+        SELECT
+            id,username,cell_phone,state,domain
+        FROM
+            account
+        WHERE
+            state=1 AND username=#{username}
+            AND PASSWORD=#{password} AND domain=#{domain};
+    </select>
+
+
+    <insert id="register" useGeneratedKeys="true" keyProperty="id" parameterType="com.nbmly.renting.account.model.AccountRegisterDTO">
+        INSERT INTO
+            account(id,username,password,cell_phone,state,domain,sex)
+        VALUES
+            (#{id},#{username},#{password},#{cellPhone},1,'u',#{sex});
+    </insert>
+
+    <select id="isAccountUsername" resultType="int">
+        SELECT
+            count(username)
+        FROM
+            account
+        WHERE
+            username=#{username};
+    </select>
+
+    <select id="getById" resultType="com.nbmly.renting.pojo.Account">
+        SELECT
+            id,username,cell_phone,state,domain,sex
+        FROM
+            account
+        WHERE
+            id = #{id};
+    </select>
+
+    <select id="getAccountList" resultType="com.nbmly.renting.pojo.Account">
+        SELECT
+            a.id,a.username,a.cell_phone,a.state,a.domain,a.sex,u.power_id,p.power_name
+        FROM
+            account a,USER u,POWER p
+        WHERE
+            a.id = u.account_id AND u.power_id = p.power_id AND p.power_id != 1001
+            <if test="username != null">
+                AND a.username LIKE "%"#{username}"%"
+            </if>
+            LIMIT #{page},#{rows};
+    </select>
+
+    <select id="getAccountCounts" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            account a,USER u,POWER p
+        WHERE
+            a.id = u.account_id AND u.power_id = p.power_id AND p.power_id != 1001
+            <if test="username != null">
+                AND a.username LIKE "%"#{username}"%"
+            </if>
+    </select>
+
+    <update id="revise" parameterType="com.nbmly.renting.account.model.AccountRegisterDTO">
+        UPDATE
+            account
+        SET
+            <if test="username != null">
+                username=#{username},
+            </if>
+            <if test="password != null">
+                password=#{password},
+            </if>
+            cell_phone=#{cellPhone},sex=#{sex}
+        WHERE
+            id = #{id};
+    </update>
+
+    <update id="reviseAccountState">
+        UPDATE
+            account
+        SET
+            state = #{state}
+        WHERE
+            id = #{accountId};
+    </update>
+</mapper>
